@@ -1,4 +1,5 @@
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
+import { setupOTEL, shutdownOTEL } from "./otel-setup.js";
 
 // Ensure Vitest environment is properly set
 process.env.VITEST = "true";
@@ -23,7 +24,16 @@ import { withIsolatedTestHome } from "./test-env.js";
 
 // Set HOME/state isolation before importing any runtime OpenClaw modules.
 const testEnv = withIsolatedTestHome();
-afterAll(() => testEnv.cleanup());
+
+// OTEL telemetry setup (enabled with OTEL_TEST=1)
+beforeAll(async () => {
+  await setupOTEL();
+});
+
+afterAll(async () => {
+  await shutdownOTEL();
+  testEnv.cleanup();
+});
 
 const [
   { installProcessWarningFilter },

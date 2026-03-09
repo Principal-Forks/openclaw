@@ -1,3 +1,13 @@
+import {
+  startRequestSpan,
+  addRequestRouted,
+  endRequestCompleted,
+  endRequestError,
+  startMethodSpan,
+  endMethodCompleted,
+  endMethodError,
+  emitMethodNotFound,
+} from "../infra/otel/gateway.js";
 import { withPluginRuntimeGatewayRequestScope } from "../plugins/runtime/gateway-request-scope.js";
 import { formatControlPlaneActor, resolveControlPlaneActor } from "./control-plane-audit.js";
 import { consumeControlPlaneWriteBudget } from "./control-plane-rate-limit.js";
@@ -99,8 +109,25 @@ export async function handleGatewayRequest(
   opts: GatewayRequestOptions & { extraHandlers?: GatewayRequestHandlers },
 ): Promise<void> {
   const { req, respond, client, isWebchatConnect, context } = opts;
+  const startedAt = Date.now();
+
+  // Determine transport type for OTEL span
+  const isWsConnect = isWebchatConnect(client?.connect);
+
+  // Start request span
+  const requestSpan = startRequestSpan({
+    method: req.method,
+    transport: isWsConnect ? "websocket" : "internal",
+    requestId: req.id,
+  });
+
   const authError = authorizeGatewayMethod(req.method, client);
   if (authError) {
+    endRequestError(requestSpan, {
+      method: req.method,
+      error: "authorization failed",
+      errorCode: String(authError.code),
+    });
     respond(false, undefined, authError);
     return;
   }
@@ -111,6 +138,11 @@ export async function handleGatewayRequest(
       context.logGateway.warn(
         `control-plane write rate-limited method=${req.method} ${formatControlPlaneActor(actor)} retryAfterMs=${budget.retryAfterMs} key=${budget.key}`,
       );
+      endRequestError(requestSpan, {
+        method: req.method,
+        error: "rate limit exceeded",
+        errorCode: String(ErrorCodes.UNAVAILABLE),
+      });
       respond(
         false,
         undefined,
@@ -132,6 +164,12 @@ export async function handleGatewayRequest(
   }
   const handler = opts.extraHandlers?.[req.method] ?? coreGatewayHandlers[req.method];
   if (!handler) {
+    emitMethodNotFound({ method: req.method });
+    endRequestError(requestSpan, {
+      method: req.method,
+      error: "unknown method",
+      errorCode: String(ErrorCodes.INVALID_REQUEST),
+    });
     respond(
       false,
       undefined,
@@ -139,15 +177,43 @@ export async function handleGatewayRequest(
     );
     return;
   }
-  const invokeHandler = () =>
-    handler({
-      req,
-      params: (req.params ?? {}) as Record<string, unknown>,
-      client,
-      isWebchatConnect,
-      respond,
-      context,
-    });
+
+  // Extract namespace from method (e.g., "config.get" -> "config")
+  const namespace = req.method.split(".")[0] ?? req.method;
+
+  // Request routed to handler
+  addRequestRouted(requestSpan, {
+    method: req.method,
+    namespace,
+  });
+
+  // Start method span
+  const methodSpan = startMethodSpan({
+    method: req.method,
+    namespace,
+  });
+
+  const invokeHandler = async () => {
+    try {
+      await handler({
+        req,
+        params: (req.params ?? {}) as Record<string, unknown>,
+        client,
+        isWebchatConnect,
+        respond,
+        context,
+      });
+      const durationMs = Date.now() - startedAt;
+      endMethodCompleted(methodSpan, { method: req.method, durationMs });
+      endRequestCompleted(requestSpan, { method: req.method, durationMs });
+    } catch (err) {
+      const durationMs = Date.now() - startedAt;
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      endMethodError(methodSpan, { method: req.method, error: errorMessage, durationMs });
+      endRequestError(requestSpan, { method: req.method, error: errorMessage });
+      throw err;
+    }
+  };
   // All handlers run inside a request scope so that plugin runtime
   // subagent methods (e.g. context engine tools spawning sub-agents
   // during tool execution) can dispatch back into the gateway.

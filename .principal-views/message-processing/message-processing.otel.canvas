@@ -1,0 +1,496 @@
+{
+	"nodes": [
+		{
+			"id": "webhook-received",
+			"type": "text",
+			"x": 100,
+			"y": 50,
+			"width": 200,
+			"height": 100,
+			"text": "# Webhook Received\n\nInbound webhook from messaging channel.",
+			"pv": {
+				"event": {
+					"name": "webhook.received",
+					"attributes": {
+						"channel": {
+							"type": "string",
+							"required": true,
+							"description": "Channel identifier (telegram, discord, slack, etc.)"
+						},
+						"updateType": {
+							"type": "string",
+							"required": false,
+							"description": "Type of update (message, callback_query, etc.)"
+						},
+						"chatId": {
+							"type": "string",
+							"required": false,
+							"description": "Chat/conversation identifier",
+							"display": false
+						}
+					}
+				},
+				"references": [
+					"src/logging/diagnostic.ts",
+					"src/infra/diagnostic-events.ts"
+				],
+				"otel": {
+					"kind": "event",
+					"category": "lifecycle",
+					"files": ["src/logging/diagnostic.ts"]
+				},
+				"shape": "rectangle",
+				"fill": "#22c55e",
+				"stroke": "#16a34a",
+				"status": "implemented"
+			},
+			"color": "#22c55e"
+		},
+		{
+			"id": "message-queued",
+			"type": "text",
+			"x": 100,
+			"y": 250,
+			"width": 200,
+			"height": 100,
+			"text": "# Message Queued\n\nMessage enqueued for processing.",
+			"pv": {
+				"event": {
+					"name": "message.queued",
+					"attributes": {
+						"channel": {
+							"type": "string",
+							"required": false,
+							"description": "Channel identifier",
+							"display": false
+						},
+						"source": {
+							"type": "string",
+							"required": true,
+							"description": "Source of the message (webhook, api, etc.)"
+						},
+						"sessionKey": {
+							"type": "string",
+							"required": false,
+							"description": "Session key for routing",
+							"display": false
+						},
+						"sessionId": {
+							"type": "string",
+							"required": false,
+							"description": "Session identifier",
+							"display": false
+						},
+						"queueDepth": {
+							"type": "number",
+							"required": false,
+							"description": "Current queue depth after enqueue"
+						}
+					}
+				},
+				"references": [
+					"src/logging/diagnostic.ts",
+					"src/infra/diagnostic-events.ts"
+				],
+				"otel": {
+					"kind": "event",
+					"category": "operation",
+					"files": ["src/logging/diagnostic.ts"]
+				},
+				"shape": "rectangle",
+				"fill": "#3b82f6",
+				"stroke": "#1d4ed8",
+				"status": "implemented"
+			},
+			"color": "#3b82f6"
+		},
+		{
+			"id": "message-processed-completed",
+			"type": "text",
+			"x": 100,
+			"y": 450,
+			"width": 200,
+			"height": 100,
+			"text": "# Message Completed\n\nMessage handling completed successfully.",
+			"pv": {
+				"event": {
+					"name": "message.processed.completed",
+					"attributes": {
+						"channel": {
+							"type": "string",
+							"required": true,
+							"description": "Channel identifier",
+							"display": false
+						},
+						"outcome": {
+							"type": "string",
+							"required": true,
+							"description": "Processing outcome: completed"
+						},
+						"messageId": {
+							"type": "string",
+							"required": false,
+							"description": "Message identifier",
+							"display": false
+						},
+						"chatId": {
+							"type": "string",
+							"required": false,
+							"description": "Chat/conversation identifier",
+							"display": false
+						},
+						"sessionKey": {
+							"type": "string",
+							"required": false,
+							"description": "Session key",
+							"display": false
+						},
+						"sessionId": {
+							"type": "string",
+							"required": false,
+							"description": "Session identifier",
+							"display": false
+						},
+						"durationMs": {
+							"type": "number",
+							"required": false,
+							"description": "Processing duration in milliseconds"
+						}
+					}
+				},
+				"references": [
+					"src/logging/diagnostic.ts",
+					"src/infra/diagnostic-events.ts"
+				],
+				"otel": {
+					"kind": "event",
+					"category": "lifecycle"
+				},
+				"shape": "rectangle",
+				"fill": "#22c55e",
+				"stroke": "#16a34a",
+				"status": "draft"
+			},
+			"color": "#22c55e"
+		},
+		{
+			"id": "message-processed-skipped",
+			"type": "text",
+			"x": 380,
+			"y": 450,
+			"width": 200,
+			"height": 100,
+			"text": "# Message Skipped\n\nMessage skipped (filtered, duplicate, etc.).",
+			"pv": {
+				"event": {
+					"name": "message.processed.skipped",
+					"attributes": {
+						"channel": {
+							"type": "string",
+							"required": true,
+							"description": "Channel identifier",
+							"display": false
+						},
+						"outcome": {
+							"type": "string",
+							"required": true,
+							"description": "Processing outcome: skipped"
+						},
+						"reason": {
+							"type": "string",
+							"required": false,
+							"description": "Reason for skipping"
+						},
+						"messageId": {
+							"type": "string",
+							"required": false,
+							"description": "Message identifier",
+							"display": false
+						},
+						"chatId": {
+							"type": "string",
+							"required": false,
+							"description": "Chat/conversation identifier",
+							"display": false
+						},
+						"durationMs": {
+							"type": "number",
+							"required": false,
+							"description": "Processing duration in milliseconds",
+							"display": false
+						}
+					}
+				},
+				"references": [
+					"src/logging/diagnostic.ts",
+					"src/infra/diagnostic-events.ts"
+				],
+				"otel": {
+					"kind": "event",
+					"category": "operation"
+				},
+				"shape": "rectangle",
+				"fill": "#f59e0b",
+				"stroke": "#d97706",
+				"status": "draft"
+			},
+			"color": "#f59e0b"
+		},
+		{
+			"id": "message-processed-error",
+			"type": "text",
+			"x": 660,
+			"y": 450,
+			"width": 200,
+			"height": 100,
+			"text": "# Message Error\n\nMessage processing failed with error.",
+			"pv": {
+				"event": {
+					"name": "message.processed.error",
+					"attributes": {
+						"channel": {
+							"type": "string",
+							"required": true,
+							"description": "Channel identifier",
+							"display": false
+						},
+						"outcome": {
+							"type": "string",
+							"required": true,
+							"description": "Processing outcome: error"
+						},
+						"error": {
+							"type": "string",
+							"required": false,
+							"description": "Error message"
+						},
+						"messageId": {
+							"type": "string",
+							"required": false,
+							"description": "Message identifier",
+							"display": false
+						},
+						"chatId": {
+							"type": "string",
+							"required": false,
+							"description": "Chat/conversation identifier",
+							"display": false
+						},
+						"durationMs": {
+							"type": "number",
+							"required": false,
+							"description": "Processing duration in milliseconds",
+							"display": false
+						}
+					}
+				},
+				"references": [
+					"src/logging/diagnostic.ts",
+					"src/infra/diagnostic-events.ts"
+				],
+				"otel": {
+					"kind": "event",
+					"category": "error"
+				},
+				"shape": "rectangle",
+				"fill": "#ef4444",
+				"stroke": "#dc2626",
+				"status": "draft"
+			},
+			"color": "#ef4444"
+		},
+		{
+			"id": "webhook-processed",
+			"type": "text",
+			"x": 100,
+			"y": 650,
+			"width": 200,
+			"height": 100,
+			"text": "# Webhook Processed\n\nWebhook handling completed.",
+			"pv": {
+				"event": {
+					"name": "webhook.processed",
+					"attributes": {
+						"channel": {
+							"type": "string",
+							"required": true,
+							"description": "Channel identifier",
+							"display": false
+						},
+						"updateType": {
+							"type": "string",
+							"required": false,
+							"description": "Type of update processed",
+							"display": false
+						},
+						"chatId": {
+							"type": "string",
+							"required": false,
+							"description": "Chat/conversation identifier",
+							"display": false
+						},
+						"durationMs": {
+							"type": "number",
+							"required": false,
+							"description": "Total webhook processing duration"
+						}
+					}
+				},
+				"references": [
+					"src/logging/diagnostic.ts",
+					"src/infra/diagnostic-events.ts"
+				],
+				"otel": {
+					"kind": "event",
+					"category": "lifecycle",
+					"files": ["src/logging/diagnostic.ts"]
+				},
+				"shape": "rectangle",
+				"fill": "#22c55e",
+				"stroke": "#16a34a",
+				"status": "implemented"
+			},
+			"color": "#22c55e"
+		},
+		{
+			"id": "webhook-error",
+			"type": "text",
+			"x": 450,
+			"y": 150,
+			"width": 200,
+			"height": 100,
+			"text": "# Webhook Error\n\nWebhook handling failed at early stage.",
+			"pv": {
+				"event": {
+					"name": "webhook.error",
+					"attributes": {
+						"channel": {
+							"type": "string",
+							"required": true,
+							"description": "Channel identifier"
+						},
+						"updateType": {
+							"type": "string",
+							"required": false,
+							"description": "Type of update",
+							"display": false
+						},
+						"chatId": {
+							"type": "string",
+							"required": false,
+							"description": "Chat/conversation identifier",
+							"display": false
+						},
+						"error": {
+							"type": "string",
+							"required": true,
+							"description": "Error message"
+						}
+					}
+				},
+				"references": [
+					"src/logging/diagnostic.ts",
+					"src/infra/diagnostic-events.ts"
+				],
+				"otel": {
+					"kind": "event",
+					"category": "error",
+					"files": ["src/logging/diagnostic.ts"]
+				},
+				"shape": "rectangle",
+				"fill": "#ef4444",
+				"stroke": "#dc2626",
+				"status": "implemented"
+			},
+			"color": "#ef4444"
+		}
+	],
+	"edges": [
+		{
+			"id": "received-to-queued",
+			"fromNode": "webhook-received",
+			"fromSide": "bottom",
+			"toNode": "message-queued",
+			"toSide": "top",
+			"pv": {
+				"edgeType": "flow"
+			}
+		},
+		{
+			"id": "queued-to-completed",
+			"fromNode": "message-queued",
+			"fromSide": "bottom",
+			"toNode": "message-processed-completed",
+			"toSide": "top",
+			"pv": {
+				"edgeType": "flow"
+			}
+		},
+		{
+			"id": "queued-to-skipped",
+			"fromNode": "message-queued",
+			"fromSide": "bottom",
+			"toNode": "message-processed-skipped",
+			"toSide": "top",
+			"pv": {
+				"edgeType": "skip"
+			}
+		},
+		{
+			"id": "queued-to-error",
+			"fromNode": "message-queued",
+			"fromSide": "bottom",
+			"toNode": "message-processed-error",
+			"toSide": "top",
+			"pv": {
+				"edgeType": "error"
+			}
+		},
+		{
+			"id": "completed-to-webhook-processed",
+			"fromNode": "message-processed-completed",
+			"fromSide": "bottom",
+			"toNode": "webhook-processed",
+			"toSide": "top",
+			"pv": {
+				"edgeType": "flow"
+			}
+		},
+		{
+			"id": "received-to-webhook-error",
+			"fromNode": "webhook-received",
+			"fromSide": "right",
+			"toNode": "webhook-error",
+			"toSide": "left",
+			"pv": {
+				"edgeType": "error"
+			}
+		}
+	],
+	"pv": {
+		"name": "Message Processing",
+		"version": "1.0.0",
+		"description": "OpenTelemetry events for OpenClaw message processing workflow",
+		"markdown": ".principal-views/message-processing/message-processing.md",
+		"edgeTypes": {
+			"flow": {
+				"label": "Happy Path",
+				"style": "solid",
+				"width": 2,
+				"color": "#22c55e"
+			},
+			"skip": {
+				"label": "Skipped",
+				"style": "dashed",
+				"width": 2,
+				"color": "#f59e0b"
+			},
+			"error": {
+				"label": "Error Path",
+				"style": "dashed",
+				"width": 2,
+				"color": "#ef4444"
+			}
+		}
+	}
+}

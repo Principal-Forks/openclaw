@@ -1,0 +1,366 @@
+{
+	"nodes": [
+		{
+			"id": "cli",
+			"type": "text",
+			"x": 50,
+			"y": 50,
+			"width": 160,
+			"height": 80,
+			"text": "# CLI\n\nCommander-based entry point for all commands.",
+			"pv": {
+				"name": "CLI",
+				"description": "Entry point for all CLI commands",
+				"references": ["src/entry.ts", "src/cli/program.ts", "src/commands/"],
+				"shape": "rectangle",
+				"fill": "#6366f1",
+				"stroke": "#4f46e5"
+			},
+			"color": "#6366f1"
+		},
+		{
+			"id": "gateway",
+			"type": "text",
+			"x": 300,
+			"y": 50,
+			"width": 200,
+			"height": 100,
+			"text": "# Gateway Server\n\nCentral orchestrator. Manages channels, routes messages, handles RPC methods.",
+			"pv": {
+				"name": "Gateway Server",
+				"description": "Central orchestrator for channels and message routing",
+				"references": ["src/gateway/server.impl.ts", "src/gateway/server-methods.ts"],
+				"shape": "rectangle",
+				"fill": "#8b5cf6",
+				"stroke": "#7c3aed"
+			},
+			"color": "#8b5cf6"
+		},
+		{
+			"id": "channels",
+			"type": "text",
+			"x": 50,
+			"y": 220,
+			"width": 180,
+			"height": 100,
+			"text": "# Channel Plugins\n\nMessaging platform adapters: Telegram, Discord, Slack, Signal, iMessage, etc.",
+			"pv": {
+				"name": "Channel Plugins",
+				"description": "Messaging platform adapters",
+				"references": ["src/channels/", "src/telegram/", "src/discord/", "src/slack/"],
+				"shape": "rectangle",
+				"fill": "#22c55e",
+				"stroke": "#16a34a"
+			},
+			"color": "#22c55e"
+		},
+		{
+			"id": "routing",
+			"type": "text",
+			"x": 300,
+			"y": 220,
+			"width": 200,
+			"height": 100,
+			"text": "# Routing & Sessions\n\nResolves inbound messages to agents. Manages session keys and conversation boundaries.",
+			"pv": {
+				"name": "Routing",
+				"description": "Message routing and session management",
+				"references": ["src/routing/resolve-route.ts", "src/routing/session-key.ts"],
+				"shape": "rectangle",
+				"fill": "#f59e0b",
+				"stroke": "#d97706"
+			},
+			"color": "#f59e0b"
+		},
+		{
+			"id": "agents",
+			"type": "text",
+			"x": 570,
+			"y": 50,
+			"width": 180,
+			"height": 100,
+			"text": "# Agents\n\nAI agent execution. Local or remote (Pi platform). Handles prompts and tool use.",
+			"pv": {
+				"name": "Agents",
+				"description": "AI agent execution layer",
+				"references": ["src/agents/", "src/commands/agent.ts"],
+				"shape": "rectangle",
+				"fill": "#ec4899",
+				"stroke": "#db2777"
+			},
+			"color": "#ec4899"
+		},
+		{
+			"id": "auto-reply",
+			"type": "text",
+			"x": 570,
+			"y": 220,
+			"width": 180,
+			"height": 100,
+			"text": "# Auto-Reply\n\nMessage dispatch, queue management, reply formatting, heartbeat handling.",
+			"pv": {
+				"name": "Auto-Reply",
+				"description": "Message dispatch and queue management",
+				"references": ["src/auto-reply/", "src/auto-reply/reply/dispatch-from-config.ts"],
+				"shape": "rectangle",
+				"fill": "#14b8a6",
+				"stroke": "#0d9488"
+			},
+			"color": "#14b8a6"
+		},
+		{
+			"id": "config",
+			"type": "text",
+			"x": 50,
+			"y": 400,
+			"width": 160,
+			"height": 80,
+			"text": "# Config\n\nJSON5 configuration with hot-reload support.",
+			"pv": {
+				"name": "Config",
+				"description": "Configuration management with hot-reload",
+				"references": ["src/config/", "src/gateway/config-reload.ts"],
+				"shape": "rectangle",
+				"fill": "#64748b",
+				"stroke": "#475569"
+			},
+			"color": "#64748b"
+		},
+		{
+			"id": "plugins",
+			"type": "text",
+			"x": 250,
+			"y": 400,
+			"width": 160,
+			"height": 80,
+			"text": "# Plugin System\n\nExtensible runtime for channel plugins and services.",
+			"pv": {
+				"name": "Plugin System",
+				"description": "Extensible runtime for plugins",
+				"references": ["src/plugins/", "src/plugin-sdk/", "extensions/"],
+				"shape": "rectangle",
+				"fill": "#a855f7",
+				"stroke": "#9333ea"
+			},
+			"color": "#a855f7"
+		},
+		{
+			"id": "diagnostics",
+			"type": "text",
+			"x": 450,
+			"y": 400,
+			"width": 160,
+			"height": 80,
+			"text": "# Diagnostics\n\nEvent bus for observability. Emits lifecycle events.",
+			"pv": {
+				"name": "Diagnostics",
+				"description": "Event bus for observability",
+				"references": ["src/infra/diagnostic-events.ts", "src/logging/diagnostic.ts"],
+				"shape": "rectangle",
+				"fill": "#06b6d4",
+				"stroke": "#0891b2"
+			},
+			"color": "#06b6d4"
+		},
+		{
+			"id": "infra",
+			"type": "text",
+			"x": 650,
+			"y": 400,
+			"width": 160,
+			"height": 80,
+			"text": "# Infrastructure\n\nSecrets, media, logging, heartbeat, TLS.",
+			"pv": {
+				"name": "Infrastructure",
+				"description": "Core infrastructure services",
+				"references": ["src/infra/", "src/secrets/", "src/media/", "src/logging/"],
+				"shape": "rectangle",
+				"fill": "#78716c",
+				"stroke": "#57534e"
+			},
+			"color": "#78716c"
+		},
+		{
+			"id": "external-channels",
+			"type": "text",
+			"x": -150,
+			"y": 220,
+			"width": 140,
+			"height": 80,
+			"text": "# External\n\nTelegram, Discord, Slack, Signal APIs",
+			"pv": {
+				"name": "External APIs",
+				"description": "External messaging platform APIs",
+				"shape": "rectangle",
+				"fill": "#e2e8f0",
+				"stroke": "#94a3b8"
+			},
+			"color": "#e2e8f0"
+		},
+		{
+			"id": "llm-providers",
+			"type": "text",
+			"x": 820,
+			"y": 50,
+			"width": 140,
+			"height": 80,
+			"text": "# LLM Providers\n\nAnthropic, OpenAI, local models",
+			"pv": {
+				"name": "LLM Providers",
+				"description": "AI model providers",
+				"shape": "rectangle",
+				"fill": "#e2e8f0",
+				"stroke": "#94a3b8"
+			},
+			"color": "#e2e8f0"
+		}
+	],
+	"edges": [
+		{
+			"id": "cli-to-gateway",
+			"fromNode": "cli",
+			"fromSide": "right",
+			"toNode": "gateway",
+			"toSide": "left",
+			"pv": {
+				"edgeType": "control"
+			}
+		},
+		{
+			"id": "gateway-to-agents",
+			"fromNode": "gateway",
+			"fromSide": "right",
+			"toNode": "agents",
+			"toSide": "left",
+			"pv": {
+				"edgeType": "flow"
+			}
+		},
+		{
+			"id": "agents-to-providers",
+			"fromNode": "agents",
+			"fromSide": "right",
+			"toNode": "llm-providers",
+			"toSide": "left",
+			"pv": {
+				"edgeType": "flow"
+			}
+		},
+		{
+			"id": "external-to-channels",
+			"fromNode": "external-channels",
+			"fromSide": "right",
+			"toNode": "channels",
+			"toSide": "left",
+			"pv": {
+				"edgeType": "flow"
+			}
+		},
+		{
+			"id": "channels-to-gateway",
+			"fromNode": "channels",
+			"fromSide": "top",
+			"toNode": "gateway",
+			"toSide": "bottom",
+			"pv": {
+				"edgeType": "flow"
+			}
+		},
+		{
+			"id": "gateway-to-routing",
+			"fromNode": "gateway",
+			"fromSide": "bottom",
+			"toNode": "routing",
+			"toSide": "top",
+			"pv": {
+				"edgeType": "flow"
+			}
+		},
+		{
+			"id": "routing-to-auto-reply",
+			"fromNode": "routing",
+			"fromSide": "right",
+			"toNode": "auto-reply",
+			"toSide": "left",
+			"pv": {
+				"edgeType": "flow"
+			}
+		},
+		{
+			"id": "auto-reply-to-agents",
+			"fromNode": "auto-reply",
+			"fromSide": "top",
+			"toNode": "agents",
+			"toSide": "bottom",
+			"pv": {
+				"edgeType": "flow"
+			}
+		},
+		{
+			"id": "auto-reply-to-channels",
+			"fromNode": "auto-reply",
+			"fromSide": "left",
+			"toNode": "channels",
+			"toSide": "right",
+			"pv": {
+				"edgeType": "flow"
+			}
+		},
+		{
+			"id": "config-to-gateway",
+			"fromNode": "config",
+			"fromSide": "top",
+			"toNode": "gateway",
+			"toSide": "bottom",
+			"pv": {
+				"edgeType": "data"
+			}
+		},
+		{
+			"id": "plugins-to-channels",
+			"fromNode": "plugins",
+			"fromSide": "top",
+			"toNode": "channels",
+			"toSide": "bottom",
+			"pv": {
+				"edgeType": "control"
+			}
+		},
+		{
+			"id": "diagnostics-to-gateway",
+			"fromNode": "diagnostics",
+			"fromSide": "top",
+			"toNode": "gateway",
+			"toSide": "bottom",
+			"pv": {
+				"edgeType": "data"
+			}
+		}
+	],
+	"pv": {
+		"name": "OpenClaw Architecture",
+		"version": "1.0.0",
+		"description": "High-level architecture of the OpenClaw AI gateway",
+		"markdown": ".principal-views/architecture/architecture.md",
+		"edgeTypes": {
+			"flow": {
+				"label": "Data Flow",
+				"style": "solid",
+				"width": 2,
+				"color": "#22c55e"
+			},
+			"control": {
+				"label": "Control",
+				"style": "dashed",
+				"width": 2,
+				"color": "#6366f1"
+			},
+			"data": {
+				"label": "Data/Config",
+				"style": "dotted",
+				"width": 1,
+				"color": "#64748b"
+			}
+		}
+	}
+}

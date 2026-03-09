@@ -1,0 +1,45 @@
+{
+  "version": "1.0.0",
+  "canvas": ".principal-views/gateway/gateway.otel.canvas",
+  "scope": "openclaw",
+  "mode": "span-tree",
+  "name": "Gateway Lifecycle",
+  "description": "Gateway server startup, ready, and shutdown events",
+  "spanPattern": "gateway.lifecycle",
+  "scenarios": [
+    {
+      "id": "startup",
+      "priority": 1,
+      "description": "Gateway started and became ready",
+      "template": {
+        "summary": "Gateway ready on port {{port}} in {{startupMs}}ms",
+        "events": {
+          "gateway.lifecycle.starting": "Starting gateway on port {{port}} ({{mode}})",
+          "gateway.lifecycle.ready": "Ready on port {{port}}: {{channels}} channels, startup took {{startupMs}}ms"
+        }
+      }
+    },
+    {
+      "id": "shutdown",
+      "priority": 2,
+      "description": "Gateway shut down",
+      "template": {
+        "summary": "Gateway stopped: {{reason}} after {{uptimeMs}}ms",
+        "events": {
+          "gateway.lifecycle.stopped": "Stopped: {{reason}}, uptime {{uptimeMs}}ms"
+        }
+      }
+    },
+    {
+      "id": "restart",
+      "priority": 3,
+      "description": "Gateway restarted",
+      "template": {
+        "summary": "Gateway restarting: {{reason}} after {{uptimeMs}}ms",
+        "events": {
+          "gateway.lifecycle.restarting": "Restarting: {{reason}}, uptime {{uptimeMs}}ms"
+        }
+      }
+    }
+  ]
+}

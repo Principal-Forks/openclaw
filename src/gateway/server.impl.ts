@@ -33,6 +33,12 @@ import { createExecApprovalForwarder } from "../infra/exec-approval-forwarder.js
 import { onHeartbeatEvent } from "../infra/heartbeat-events.js";
 import { startHeartbeatRunner, type HeartbeatRunner } from "../infra/heartbeat-runner.js";
 import { getMachineDisplayName } from "../infra/machine-name.js";
+import {
+  emitGatewayStarting,
+  emitGatewayReady,
+  emitGatewayStopped,
+} from "../infra/otel/gateway.js";
+import { initTracer } from "../infra/otel/tracer.js";
 import { ensureOpenClawCliOnPath } from "../infra/path-env.js";
 import { setGatewaySigusr1RestartPolicy, setPreRestartDeferralCheck } from "../infra/restart.js";
 import {
@@ -266,6 +272,17 @@ export async function startGatewayServer(
   port = 18789,
   opts: GatewayServerOptions = {},
 ): Promise<GatewayServer> {
+  const startupStartedAt = Date.now();
+
+  // Initialize OTEL tracer (no-op if OTEL not configured)
+  await initTracer();
+
+  // Emit lifecycle starting span
+  const lifecycleSpan = emitGatewayStarting({
+    port,
+    mode: opts.bind === "lan" ? "remote" : "local",
+  });
+
   const minimalTestGateway =
     process.env.VITEST === "1" && process.env.OPENCLAW_TEST_MINIMAL_GATEWAY === "1";
 
@@ -890,6 +907,13 @@ export async function startGatewayServer(
     log,
     isNixMode,
   });
+
+  // Emit lifecycle ready event
+  emitGatewayReady(lifecycleSpan, {
+    port,
+    channels: Object.keys(channelManager.getRuntimeSnapshot().channels).length,
+    startupMs: Date.now() - startupStartedAt,
+  });
   const stopGatewayUpdateCheck = minimalTestGateway
     ? () => {}
     : scheduleGatewayUpdateCheck({
@@ -1031,6 +1055,12 @@ export async function startGatewayServer(
 
   return {
     close: async (opts) => {
+      // Emit lifecycle stopped event
+      emitGatewayStopped({
+        reason: opts?.reason ?? "signal",
+        uptimeMs: Date.now() - startupStartedAt,
+      });
+
       // Run gateway_stop plugin hook before shutdown
       await runGlobalGatewayStopSafely({
         event: { reason: opts?.reason ?? "gateway stopping" },

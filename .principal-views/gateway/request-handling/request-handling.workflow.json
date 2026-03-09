@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "canvas": ".principal-views/gateway/gateway.otel.canvas",
+  "scope": "openclaw",
+  "mode": "span-tree",
+  "name": "Request Handling",
+  "description": "Gateway request lifecycle from receipt to completion",
+  "spanPattern": "gateway.request",
+  "scenarios": [
+    {
+      "id": "success",
+      "priority": 1,
+      "description": "Request processed successfully",
+      "template": {
+        "summary": "{{method}} completed in {{durationMs}}ms",
+        "events": {
+          "gateway.request.received": "Received {{method}} via {{transport}} ({{requestId}})",
+          "gateway.request.routed": "Routed {{method}} to {{namespace}}",
+          "gateway.request.completed": "{{method}} completed in {{durationMs}}ms"
+        }
+      }
+    },
+    {
+      "id": "error",
+      "priority": 2,
+      "description": "Request failed with an error",
+      "template": {
+        "summary": "{{method}} failed: {{error}}",
+        "events": {
+          "gateway.request.received": "Received {{method}} via {{transport}} ({{requestId}})",
+          "gateway.request.routed": "Routed {{method}} to {{namespace}}",
+          "gateway.request.error": "{{method}} error: {{error}} ({{errorCode}})"
+        }
+      }
+    },
+    {
+      "id": "timeout",
+      "priority": 3,
+      "description": "Request timed out",
+      "template": {
+        "summary": "{{method}} timed out after {{durationMs}}ms",
+        "events": {
+          "gateway.request.received": "Received {{method}} via {{transport}} ({{requestId}})",
+          "gateway.request.routed": "Routed {{method}} to {{namespace}}",
+          "gateway.request.timeout": "{{method}} timeout after {{durationMs}}ms (limit: {{timeoutMs}}ms)"
+        }
+      }
+    }
+  ]
+}

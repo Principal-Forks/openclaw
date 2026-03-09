@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
+import { withTestSpan } from "../../test/otel-setup.js";
 import { captureEnv } from "../test-utils/env.js";
 import { startGatewayServer } from "./server.js";
 import { extractPayloadText } from "./test-helpers.agent-results.js";
@@ -125,10 +126,8 @@ describe("gateway e2e", () => {
     },
   );
 
-  it(
-    "runs wizard over ws and writes auth token config",
-    { timeout: GATEWAY_E2E_TIMEOUT_MS },
-    async () => {
+  it("runs wizard over ws and writes auth token config", { timeout: GATEWAY_E2E_TIMEOUT_MS }, () =>
+    withTestSpan("runs wizard over ws and writes auth token config", async () => {
       const envSnapshot = captureEnv([
         "HOME",
         "OPENCLAW_STATE_DIR",
@@ -242,6 +241,6 @@ describe("gateway e2e", () => {
         await fs.rm(tempHome, { recursive: true, force: true });
         envSnapshot.restore();
       }
-    },
+    }),
   );
 });

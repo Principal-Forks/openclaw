@@ -1,0 +1,624 @@
+{
+	"nodes": [
+		{
+			"id": "request-received",
+			"type": "text",
+			"x": 50,
+			"y": 50,
+			"width": 200,
+			"height": 100,
+			"text": "# Request Received\n\nGateway receives an incoming request (HTTP, WebSocket, or RPC).",
+			"pv": {
+				"event": {
+					"name": "gateway.request.received",
+					"attributes": {
+						"method": {
+							"type": "string",
+							"required": true,
+							"description": "RPC method name (e.g., chat.send, channels.status)"
+						},
+						"transport": {
+							"type": "string",
+							"required": true,
+							"description": "Transport type: http, websocket, internal"
+						},
+						"requestId": {
+							"type": "string",
+							"required": false,
+							"description": "Unique request identifier"
+						}
+					}
+				},
+				"references": ["src/gateway/server.impl.ts", "src/gateway/server-methods.ts"],
+				"otel": {
+					"kind": "event",
+					"category": "lifecycle"
+				},
+				"shape": "rectangle",
+				"fill": "#3b82f6",
+				"stroke": "#1d4ed8",
+				"status": "draft"
+			},
+			"color": "#3b82f6"
+		},
+		{
+			"id": "request-routed",
+			"type": "text",
+			"x": 50,
+			"y": 200,
+			"width": 200,
+			"height": 100,
+			"text": "# Request Routed\n\nRequest matched to a method handler.",
+			"pv": {
+				"event": {
+					"name": "gateway.request.routed",
+					"attributes": {
+						"method": {
+							"type": "string",
+							"required": true,
+							"description": "RPC method name"
+						},
+						"namespace": {
+							"type": "string",
+							"required": true,
+							"description": "Method namespace (chat, channels, config, etc.)"
+						}
+					}
+				},
+				"references": ["src/gateway/server-methods.ts"],
+				"otel": {
+					"kind": "event",
+					"category": "operation"
+				},
+				"shape": "rectangle",
+				"fill": "#3b82f6",
+				"stroke": "#1d4ed8",
+				"status": "draft"
+			},
+			"color": "#3b82f6"
+		},
+		{
+			"id": "request-completed",
+			"type": "text",
+			"x": 50,
+			"y": 350,
+			"width": 200,
+			"height": 100,
+			"text": "# Request Completed\n\nRequest processing finished successfully.",
+			"pv": {
+				"event": {
+					"name": "gateway.request.completed",
+					"attributes": {
+						"method": {
+							"type": "string",
+							"required": true,
+							"description": "RPC method name"
+						},
+						"durationMs": {
+							"type": "number",
+							"required": false,
+							"description": "Request duration in milliseconds"
+						}
+					}
+				},
+				"references": ["src/gateway/server.impl.ts"],
+				"otel": {
+					"kind": "event",
+					"category": "lifecycle"
+				},
+				"shape": "rectangle",
+				"fill": "#22c55e",
+				"stroke": "#16a34a",
+				"status": "draft"
+			},
+			"color": "#22c55e"
+		},
+		{
+			"id": "request-timeout",
+			"type": "text",
+			"x": 300,
+			"y": 350,
+			"width": 200,
+			"height": 100,
+			"text": "# Request Timeout\n\nRequest timed out.",
+			"pv": {
+				"event": {
+					"name": "gateway.request.timeout",
+					"attributes": {
+						"method": {
+							"type": "string",
+							"required": true,
+							"description": "RPC method name"
+						},
+						"timeoutMs": {
+							"type": "number",
+							"required": false,
+							"description": "Timeout threshold in milliseconds"
+						},
+						"durationMs": {
+							"type": "number",
+							"required": false,
+							"description": "Actual duration before timeout"
+						}
+					}
+				},
+				"references": ["src/gateway/server.impl.ts"],
+				"otel": {
+					"kind": "event",
+					"category": "error"
+				},
+				"shape": "rectangle",
+				"fill": "#f59e0b",
+				"stroke": "#d97706",
+				"status": "draft"
+			},
+			"color": "#f59e0b"
+		},
+		{
+			"id": "request-error",
+			"type": "text",
+			"x": 300,
+			"y": 200,
+			"width": 200,
+			"height": 100,
+			"text": "# Request Error\n\nRequest failed with an error.",
+			"pv": {
+				"event": {
+					"name": "gateway.request.error",
+					"attributes": {
+						"method": {
+							"type": "string",
+							"required": true,
+							"description": "RPC method name"
+						},
+						"error": {
+							"type": "string",
+							"required": true,
+							"description": "Error message"
+						},
+						"errorCode": {
+							"type": "string",
+							"required": false,
+							"description": "Error code if available"
+						}
+					}
+				},
+				"references": ["src/gateway/server.impl.ts"],
+				"otel": {
+					"kind": "event",
+					"category": "error"
+				},
+				"shape": "rectangle",
+				"fill": "#ef4444",
+				"stroke": "#dc2626",
+				"status": "draft"
+			},
+			"color": "#ef4444"
+		},
+		{
+			"id": "method-invoked",
+			"type": "text",
+			"x": 550,
+			"y": 50,
+			"width": 200,
+			"height": 100,
+			"text": "# Method Invoked\n\nRPC method handler invoked.",
+			"pv": {
+				"event": {
+					"name": "gateway.method.invoked",
+					"attributes": {
+						"method": {
+							"type": "string",
+							"required": true,
+							"description": "Full method name"
+						},
+						"namespace": {
+							"type": "string",
+							"required": true,
+							"description": "Method namespace"
+						}
+					}
+				},
+				"references": ["src/gateway/server-methods.ts", "src/gateway/server-methods/"],
+				"otel": {
+					"kind": "event",
+					"category": "operation"
+				},
+				"shape": "rectangle",
+				"fill": "#8b5cf6",
+				"stroke": "#7c3aed",
+				"status": "draft"
+			},
+			"color": "#8b5cf6"
+		},
+		{
+			"id": "method-completed",
+			"type": "text",
+			"x": 550,
+			"y": 200,
+			"width": 200,
+			"height": 100,
+			"text": "# Method Completed\n\nRPC method handler finished successfully.",
+			"pv": {
+				"event": {
+					"name": "gateway.method.completed",
+					"attributes": {
+						"method": {
+							"type": "string",
+							"required": true,
+							"description": "Full method name"
+						},
+						"durationMs": {
+							"type": "number",
+							"required": false,
+							"description": "Handler duration in milliseconds"
+						}
+					}
+				},
+				"references": ["src/gateway/server-methods.ts"],
+				"otel": {
+					"kind": "event",
+					"category": "operation"
+				},
+				"shape": "rectangle",
+				"fill": "#22c55e",
+				"stroke": "#16a34a",
+				"status": "draft"
+			},
+			"color": "#22c55e"
+		},
+		{
+			"id": "method-error",
+			"type": "text",
+			"x": 750,
+			"y": 200,
+			"width": 200,
+			"height": 100,
+			"text": "# Method Error\n\nRPC method handler failed.",
+			"pv": {
+				"event": {
+					"name": "gateway.method.error",
+					"attributes": {
+						"method": {
+							"type": "string",
+							"required": true,
+							"description": "Full method name"
+						},
+						"error": {
+							"type": "string",
+							"required": true,
+							"description": "Error message"
+						},
+						"durationMs": {
+							"type": "number",
+							"required": false,
+							"description": "Handler duration in milliseconds"
+						}
+					}
+				},
+				"references": ["src/gateway/server-methods.ts"],
+				"otel": {
+					"kind": "event",
+					"category": "error"
+				},
+				"shape": "rectangle",
+				"fill": "#ef4444",
+				"stroke": "#dc2626",
+				"status": "draft"
+			},
+			"color": "#ef4444"
+		},
+		{
+			"id": "method-not-found",
+			"type": "text",
+			"x": 550,
+			"y": 350,
+			"width": 200,
+			"height": 100,
+			"text": "# Method Not Found\n\nRequested method does not exist.",
+			"pv": {
+				"event": {
+					"name": "gateway.method.not-found",
+					"attributes": {
+						"method": {
+							"type": "string",
+							"required": true,
+							"description": "Requested method name"
+						}
+					}
+				},
+				"references": ["src/gateway/server-methods.ts"],
+				"otel": {
+					"kind": "event",
+					"category": "error"
+				},
+				"shape": "rectangle",
+				"fill": "#f59e0b",
+				"stroke": "#d97706",
+				"status": "draft"
+			},
+			"color": "#f59e0b"
+		},
+		{
+			"id": "gateway-starting",
+			"type": "text",
+			"x": 1050,
+			"y": 50,
+			"width": 200,
+			"height": 100,
+			"text": "# Gateway Starting\n\nGateway server is initializing.",
+			"pv": {
+				"event": {
+					"name": "gateway.lifecycle.starting",
+					"attributes": {
+						"port": {
+							"type": "number",
+							"required": false,
+							"description": "Server port"
+						},
+						"mode": {
+							"type": "string",
+							"required": false,
+							"description": "Gateway mode: local, remote"
+						}
+					}
+				},
+				"references": ["src/gateway/server.impl.ts"],
+				"otel": {
+					"kind": "event",
+					"category": "lifecycle"
+				},
+				"shape": "rectangle",
+				"fill": "#06b6d4",
+				"stroke": "#0891b2",
+				"status": "draft"
+			},
+			"color": "#06b6d4"
+		},
+		{
+			"id": "gateway-ready",
+			"type": "text",
+			"x": 1050,
+			"y": 200,
+			"width": 200,
+			"height": 100,
+			"text": "# Gateway Ready\n\nGateway server is ready to accept requests.",
+			"pv": {
+				"event": {
+					"name": "gateway.lifecycle.ready",
+					"attributes": {
+						"port": {
+							"type": "number",
+							"required": false,
+							"description": "Server port"
+						},
+						"channels": {
+							"type": "number",
+							"required": false,
+							"description": "Number of active channels"
+						},
+						"startupMs": {
+							"type": "number",
+							"required": false,
+							"description": "Startup duration in milliseconds"
+						}
+					}
+				},
+				"references": ["src/gateway/server.impl.ts"],
+				"otel": {
+					"kind": "event",
+					"category": "lifecycle"
+				},
+				"shape": "rectangle",
+				"fill": "#22c55e",
+				"stroke": "#16a34a",
+				"status": "draft"
+			},
+			"color": "#22c55e"
+		},
+		{
+			"id": "gateway-stopped",
+			"type": "text",
+			"x": 1050,
+			"y": 350,
+			"width": 200,
+			"height": 100,
+			"text": "# Gateway Stopped\n\nGateway server has stopped.",
+			"pv": {
+				"event": {
+					"name": "gateway.lifecycle.stopped",
+					"attributes": {
+						"reason": {
+							"type": "string",
+							"required": false,
+							"description": "Shutdown reason: signal, error"
+						},
+						"uptimeMs": {
+							"type": "number",
+							"required": false,
+							"description": "Total uptime in milliseconds"
+						}
+					}
+				},
+				"references": ["src/gateway/server.impl.ts"],
+				"otel": {
+					"kind": "event",
+					"category": "lifecycle"
+				},
+				"shape": "rectangle",
+				"fill": "#64748b",
+				"stroke": "#475569",
+				"status": "draft"
+			},
+			"color": "#64748b"
+		},
+		{
+			"id": "gateway-restarting",
+			"type": "text",
+			"x": 1300,
+			"y": 200,
+			"width": 200,
+			"height": 100,
+			"text": "# Gateway Restarting\n\nGateway server is restarting.",
+			"pv": {
+				"event": {
+					"name": "gateway.lifecycle.restarting",
+					"attributes": {
+						"reason": {
+							"type": "string",
+							"required": false,
+							"description": "Restart reason: config-change, signal, error"
+						},
+						"uptimeMs": {
+							"type": "number",
+							"required": false,
+							"description": "Uptime before restart"
+						}
+					}
+				},
+				"references": ["src/gateway/server.impl.ts"],
+				"otel": {
+					"kind": "event",
+					"category": "lifecycle"
+				},
+				"shape": "rectangle",
+				"fill": "#f59e0b",
+				"stroke": "#d97706",
+				"status": "draft"
+			},
+			"color": "#f59e0b"
+		}
+	],
+	"edges": [
+		{
+			"id": "received-to-routed",
+			"fromNode": "request-received",
+			"fromSide": "bottom",
+			"toNode": "request-routed",
+			"toSide": "top",
+			"pv": {
+				"edgeType": "flow"
+			}
+		},
+		{
+			"id": "routed-to-completed",
+			"fromNode": "request-routed",
+			"fromSide": "bottom",
+			"toNode": "request-completed",
+			"toSide": "top",
+			"pv": {
+				"edgeType": "flow"
+			}
+		},
+		{
+			"id": "routed-to-error",
+			"fromNode": "request-routed",
+			"fromSide": "right",
+			"toNode": "request-error",
+			"toSide": "left",
+			"pv": {
+				"edgeType": "error"
+			}
+		},
+		{
+			"id": "routed-to-timeout",
+			"fromNode": "request-routed",
+			"fromSide": "bottom",
+			"toNode": "request-timeout",
+			"toSide": "top",
+			"pv": {
+				"edgeType": "error"
+			}
+		},
+		{
+			"id": "invoked-to-completed",
+			"fromNode": "method-invoked",
+			"fromSide": "bottom",
+			"toNode": "method-completed",
+			"toSide": "top",
+			"pv": {
+				"edgeType": "flow"
+			}
+		},
+		{
+			"id": "invoked-to-not-found",
+			"fromNode": "method-invoked",
+			"fromSide": "bottom",
+			"toNode": "method-not-found",
+			"toSide": "top",
+			"pv": {
+				"edgeType": "error"
+			}
+		},
+		{
+			"id": "invoked-to-error",
+			"fromNode": "method-invoked",
+			"fromSide": "right",
+			"toNode": "method-error",
+			"toSide": "left",
+			"pv": {
+				"edgeType": "error"
+			}
+		},
+		{
+			"id": "starting-to-ready",
+			"fromNode": "gateway-starting",
+			"fromSide": "bottom",
+			"toNode": "gateway-ready",
+			"toSide": "top",
+			"pv": {
+				"edgeType": "flow"
+			}
+		},
+		{
+			"id": "ready-to-stopped",
+			"fromNode": "gateway-ready",
+			"fromSide": "bottom",
+			"toNode": "gateway-stopped",
+			"toSide": "top",
+			"pv": {
+				"edgeType": "flow"
+			}
+		},
+		{
+			"id": "ready-to-restarting",
+			"fromNode": "gateway-ready",
+			"fromSide": "right",
+			"toNode": "gateway-restarting",
+			"toSide": "left",
+			"pv": {
+				"edgeType": "flow"
+			}
+		},
+		{
+			"id": "restarting-to-starting",
+			"fromNode": "gateway-restarting",
+			"fromSide": "top",
+			"toNode": "gateway-starting",
+			"toSide": "right",
+			"pv": {
+				"edgeType": "flow"
+			}
+		}
+	],
+	"pv": {
+		"name": "Gateway",
+		"version": "1.0.0",
+		"description": "Gateway server OTEL events - request handling, method dispatch, and lifecycle",
+		"markdown": ".principal-views/gateway/gateway.md",
+		"edgeTypes": {
+			"flow": {
+				"label": "Flow",
+				"style": "solid",
+				"width": 2,
+				"color": "#22c55e"
+			},
+			"error": {
+				"label": "Error",
+				"style": "dashed",
+				"width": 2,
+				"color": "#ef4444"
+			}
+		}
+	}
+}

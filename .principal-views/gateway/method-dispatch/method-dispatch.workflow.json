@@ -1,0 +1,46 @@
+{
+  "version": "1.0.0",
+  "canvas": ".principal-views/gateway/gateway.otel.canvas",
+  "scope": "openclaw",
+  "mode": "span-tree",
+  "name": "Method Dispatch",
+  "description": "RPC method handler invocation and completion",
+  "spanPattern": "gateway.method",
+  "scenarios": [
+    {
+      "id": "success",
+      "priority": 1,
+      "description": "Method executed successfully",
+      "template": {
+        "summary": "{{namespace}}.{{method}} executed in {{durationMs}}ms",
+        "events": {
+          "gateway.method.invoked": "Invoked {{namespace}}.{{method}}",
+          "gateway.method.completed": "{{method}} completed in {{durationMs}}ms"
+        }
+      }
+    },
+    {
+      "id": "not-found",
+      "priority": 2,
+      "description": "Requested method does not exist",
+      "template": {
+        "summary": "Method not found: {{method}}",
+        "events": {
+          "gateway.method.not-found": "Not found: {{method}}"
+        }
+      }
+    },
+    {
+      "id": "error",
+      "priority": 3,
+      "description": "Method execution failed",
+      "template": {
+        "summary": "{{namespace}}.{{method}} failed: {{error}}",
+        "events": {
+          "gateway.method.invoked": "Invoked {{namespace}}.{{method}}",
+          "gateway.method.error": "{{method}} error: {{error}} ({{durationMs}}ms)"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+version: "1.0.0"
+name: "openclaw"
+description: "OpenClaw gateway - AI assistant messaging platform"
+
+# Service resource registry for OTEL trace routing
+resources:
+  openclaw-gateway:
+    service.name: "openclaw"
+    service.version: "2026.3.8"
+    deployment.environment: "production"
+    library.name: "openclaw"
+    owned-scopes:
+      - "openclaw"
+
+  openclaw-test:
+    service.name: "openclaw-test"
+    service.version: "1.0.0"
+    deployment.environment: "test"
+    library.name: "openclaw"
+    test.framework: "vitest"
+    owned-scopes:
+      - "openclaw"
+
+nodeComponents: {}
+
+edgeComponents: {}

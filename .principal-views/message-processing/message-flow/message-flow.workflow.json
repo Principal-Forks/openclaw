@@ -1,0 +1,63 @@
+{
+  "version": "1.0.0",
+  "canvas": ".principal-views/message-processing/message-processing.otel.canvas",
+  "scope": "openclaw",
+  "mode": "span-tree",
+  "name": "Message Processing",
+  "description": "Message processing workflow from webhook receipt to completion",
+  "spanPattern": "openclaw.message",
+  "scenarios": [
+    {
+      "id": "happy-path",
+      "priority": 1,
+      "description": "Successful message processing through agent response",
+      "template": {
+        "summary": "Processed message in {{durationMs}}ms via {{channel}}",
+        "events": {
+          "webhook.received": "Received {{updateType}} webhook from {{channel}}",
+          "message.queued": "Queued message from {{source}} (queue depth: {{queueDepth}})",
+          "message.processed.completed": "Completed: Processed in {{durationMs}}ms ({{outcome}})",
+          "webhook.processed": "Webhook completed in {{durationMs}}ms"
+        }
+      }
+    },
+    {
+      "id": "skipped-filtered",
+      "priority": 2,
+      "description": "Message skipped due to filtering (allowlist, duplicate, etc.)",
+      "template": {
+        "summary": "Skipped: {{reason}}",
+        "events": {
+          "webhook.received": "Received {{updateType}} webhook from {{channel}}",
+          "message.queued": "Queued message from {{source}}",
+          "message.processed.skipped": "Skipped: {{reason}} ({{outcome}})"
+        }
+      }
+    },
+    {
+      "id": "processing-error",
+      "priority": 3,
+      "description": "Message processing failed with error",
+      "template": {
+        "summary": "Error: {{error}}",
+        "events": {
+          "webhook.received": "Received {{updateType}} webhook from {{channel}}",
+          "message.queued": "Queued message from {{source}}",
+          "message.processed.error": "Error: {{error}} ({{outcome}})"
+        }
+      }
+    },
+    {
+      "id": "webhook-early-error",
+      "priority": 4,
+      "description": "Webhook failed before message could be queued",
+      "template": {
+        "summary": "Webhook error: {{error}}",
+        "events": {
+          "webhook.received": "Received webhook from {{channel}}",
+          "webhook.error": "Error ({{channel}}): {{error}}"
+        }
+      }
+    }
+  ]
+}
